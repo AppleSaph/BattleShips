@@ -1,5 +1,7 @@
 package nl.applesaph;
 
+import nl.applesaph.server.Server;
+
 import java.util.Scanner;
 
 public class Main {
@@ -32,13 +34,13 @@ public class Main {
                 valid = false;
             }
         } while (!valid);
-        Server s = new Server(port);
-        s.start();
+        Server server = new Server(port);
+        server.start();
         while (!exit) {
             if (scanner.nextLine().equals("quit")) {
                 exit = true;
             }
         }
-        s.stop();
+        server.stop();
     }
 }
