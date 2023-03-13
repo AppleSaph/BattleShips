@@ -1,22 +1,44 @@
 package nl.applesaph.server;
 
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.List;
 
-public class Server implements ServerInterface{
+public class Server implements ServerInterface, Runnable {
+
+    private int port;
+    private ServerSocket serverSocket;
+    private Thread serverThread;
+    private List<ClientHandler> clientHandlers;
+
     public Server(int port) {
-        
+        this.port = port;
     }
 
     public void start() {
-        
+        try {
+            serverSocket = new ServerSocket(port);
+            serverThread = new Thread(this);
+            serverThread.start();
+            System.out.println("Server started at " + port);
+        } catch (IOException e) {
+            System.out.println("ERROR: Could not start server at port " + port);
+        }
     }
 
     public void stop() {
+        try {
+            serverSocket.close();
+            serverThread.join();
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public int getPort() {
-        return 0;
+        return port;
     }
 
     @Override
@@ -56,12 +78,12 @@ public class Server implements ServerInterface{
 
     @Override
     public void removeClient(ClientHandler clientHandler) {
-
+        clientHandlers.remove(clientHandler);
     }
 
     @Override
     public void addClient(ClientHandler clientHandler) {
-
+        clientHandlers.add(clientHandler);
     }
 
     @Override
@@ -82,5 +104,21 @@ public class Server implements ServerInterface{
     @Override
     public void sendToClients(String message, List<ClientHandler> clientHandlers) {
 
+    }
+
+    @Override
+    public void run() {
+        boolean running = true;
+        while (running && !serverSocket.isClosed()) {
+            try {
+                Socket socket = serverSocket.accept();
+                ClientHandler clientHandler = new ClientHandler(socket, this);
+                Thread clientThread = new Thread(clientHandler);
+                clientThread.start();
+            } catch (IOException e) {
+                e.printStackTrace();
+                running = false;
+            }
+        }
     }
 }
