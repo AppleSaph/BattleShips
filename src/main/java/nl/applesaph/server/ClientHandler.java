@@ -6,7 +6,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-public class ClientHandler implements Runnable{
+public class ClientHandler implements Runnable {
 
     private final Socket socket;
     private final PrintWriter out;
@@ -32,6 +32,18 @@ public class ClientHandler implements Runnable{
         in.close();
         out.close();
         socket.close();
+    }
+
+    protected void send(String message) {
+        //send message to client
+        if(!running){
+            throw new IllegalStateException("Not running");
+        }
+        if (!socket.isConnected()) {
+            throw new IllegalStateException("Socket is not connected");
+        }
+        out.println(message);
+        out.flush();
     }
 
 
