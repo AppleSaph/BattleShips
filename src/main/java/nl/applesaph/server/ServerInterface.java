@@ -30,7 +30,7 @@ public interface ServerInterface {
 
     void sendToAll(String message);
 
-    void sendToAllExcept(String message, ClientHandler clientHandler);
+    void sendToAllExcept(String message, List<ClientHandler> clientHandlerList);
 
     void sendToClient(String message, ClientHandler clientHandler);
 

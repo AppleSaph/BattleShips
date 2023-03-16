@@ -88,22 +88,22 @@ public class Server implements ServerInterface, Runnable {
 
     @Override
     public void sendToAll(String message) {
-
+        clientHandlers.forEach(clientHandler -> clientHandler.send(message));
     }
 
     @Override
-    public void sendToAllExcept(String message, ClientHandler clientHandler) {
-
+    public void sendToAllExcept(String message, List<ClientHandler> clientHandlerList) {
+        clientHandlers.stream().filter(clientHandler -> !clientHandlerList.contains(clientHandler)).forEach(clientHandler -> clientHandler.send(message));
     }
 
     @Override
     public void sendToClient(String message, ClientHandler clientHandler) {
-
+        clientHandler.send(message);
     }
 
     @Override
     public void sendToClients(String message, List<ClientHandler> clientHandlers) {
-
+        clientHandlers.forEach(clientHandler -> clientHandler.send(message));
     }
 
     @Override
