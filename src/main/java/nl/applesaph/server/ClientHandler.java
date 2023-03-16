@@ -21,13 +21,19 @@ public class ClientHandler implements Runnable {
         this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         this.running = true;
         this.server = server;
+        server.addClient(this);
+        System.out.println("[CONNECT] " + socket.getInetAddress() + ":" + socket.getPort());
+        send("Welcome to the BattleShips server!");
     }
 
-    private String parseIncomingMessage(String line) {
-        return line;
+    private void parseIncomingMessage(String line) {
+        if (!line.equals("")) {
+            send(line);
+        }
     }
 
     private void close() throws IOException {
+        System.out.println("[DISCONNECT] " + socket.getInetAddress() + ":" + socket.getPort());
         server.removeClient(this);
         in.close();
         out.close();
@@ -53,11 +59,7 @@ public class ClientHandler implements Runnable {
             try {
                 String line = in.readLine();
                 if (line != null) {
-                    String message = parseIncomingMessage(line);
-                    if (!message.equals("")) {
-                        out.println(message);
-                        out.flush();
-                    }
+                    parseIncomingMessage(line);
                 } else {
                     running = false;
                 }
