@@ -18,7 +18,7 @@ public interface ServerInterface {
 
     void handleSetupTurnMessage(ClientHandler client, String message);
 
-    boolean checkUsernameLoggedIn(String username);
+    int checkUsernameLoggedIn(String username);
 
     List<ClientHandler> getLoggedInClients();
     
