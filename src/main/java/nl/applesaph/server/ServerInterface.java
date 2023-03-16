@@ -24,17 +24,17 @@ public interface ServerInterface {
     
     List<ClientHandler> getWaitingClients();
 
-    void removeClient(ClientHandler clientHandler);
+    void removeClient(int playerNumber);
 
-    void addClient(ClientHandler clientHandler);
+    void addClient(int PlayerNumber, ClientHandler clientHandler);
 
     void sendToAll(String message);
 
-    void sendToAllExcept(String message, List<ClientHandler> clientHandlerList);
+    void sendToAllExcept(String message, int[] playerNumbers);
 
-    void sendToClient(String message, ClientHandler clientHandler);
+    void sendToClient(String message, int playerNumber);
 
-    void sendToClients(String message, List<ClientHandler> clientHandlers);
+    void sendToClients(String message, int[] playerNumbers);
 
 
 }

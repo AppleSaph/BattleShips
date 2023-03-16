@@ -7,23 +7,23 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 public class ClientHandler implements Runnable {
-
+    private final int playerNumber;
     private final Socket socket;
     private final PrintWriter out;
     private final BufferedReader in;
     private Server server;
     private boolean running;
-    private String logInName = null;
 
-    public ClientHandler(Socket socket, Server server) throws IOException {
+    public ClientHandler(Socket socket, Server server, int playerNumber) throws IOException {
         this.socket = socket;
         this.out = new PrintWriter(socket.getOutputStream());
         this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         this.running = true;
         this.server = server;
-        server.addClient(this);
+        this.playerNumber = playerNumber;
+        server.addClient(playerNumber,this);
         System.out.println("[CONNECT] " + socket.getInetAddress() + ":" + socket.getPort());
-        send("Welcome to the BattleShips server!");
+        send("Welcome to the BattleShips server! You are player " + playerNumber);
     }
 
     private void parseIncomingMessage(String line) {
@@ -34,7 +34,7 @@ public class ClientHandler implements Runnable {
 
     private void close() throws IOException {
         System.out.println("[DISCONNECT] " + socket.getInetAddress() + ":" + socket.getPort());
-        server.removeClient(this);
+        server.removeClient(playerNumber);
         in.close();
         out.close();
         socket.close();

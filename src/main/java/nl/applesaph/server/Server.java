@@ -3,6 +3,7 @@ package nl.applesaph.server;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.HashMap;
 import java.util.List;
 
 public class Server implements ServerInterface, Runnable {
@@ -10,7 +11,7 @@ public class Server implements ServerInterface, Runnable {
     private int port;
     private ServerSocket serverSocket;
     private Thread serverThread;
-    private List<ClientHandler> clientHandlers;
+    private HashMap<Integer, ClientHandler> clientHandlers = new HashMap<>();
 
     public Server(int port) {
         this.port = port;
@@ -77,33 +78,45 @@ public class Server implements ServerInterface, Runnable {
     }
 
     @Override
-    public void removeClient(ClientHandler clientHandler) {
-        clientHandlers.remove(clientHandler);
+    public void removeClient(int playerNumber) {
+        clientHandlers.remove(playerNumber);
     }
 
     @Override
-    public void addClient(ClientHandler clientHandler) {
-        clientHandlers.add(clientHandler);
+    public void addClient(int playerNumber, ClientHandler clientHandler) {
+        clientHandlers.put(playerNumber, clientHandler);
     }
 
     @Override
     public void sendToAll(String message) {
-        clientHandlers.forEach(clientHandler -> clientHandler.send(message));
+        clientHandlers.forEach((key, value) -> value.send(message));
     }
 
     @Override
-    public void sendToAllExcept(String message, List<ClientHandler> clientHandlerList) {
-        clientHandlers.stream().filter(clientHandler -> !clientHandlerList.contains(clientHandler)).forEach(clientHandler -> clientHandler.send(message));
+    public void sendToAllExcept(String message, int[] playerNumbers) {
+        clientHandlers.forEach((key, value) -> {
+            for (int playerNumber : playerNumbers) {
+                if (key != playerNumber) {
+                    value.send(message);
+                }
+            }
+        });
     }
 
     @Override
-    public void sendToClient(String message, ClientHandler clientHandler) {
-        clientHandler.send(message);
+    public void sendToClient(String message, int playerNumber) {
+        clientHandlers.get(playerNumber).send(message);
     }
 
     @Override
-    public void sendToClients(String message, List<ClientHandler> clientHandlers) {
-        clientHandlers.forEach(clientHandler -> clientHandler.send(message));
+    public void sendToClients(String message, int[] playerNumbers) {
+        clientHandlers.forEach((key, value) -> {
+            for (int playerNumber : playerNumbers) {
+                if (key == playerNumber) {
+                    value.send(message);
+                }
+            }
+        });
     }
 
     @Override
@@ -112,7 +125,7 @@ public class Server implements ServerInterface, Runnable {
         while (running && !serverSocket.isClosed()) {
             try {
                 Socket socket = serverSocket.accept();
-                ClientHandler clientHandler = new ClientHandler(socket, this);
+                ClientHandler clientHandler = new ClientHandler(socket, this,1);
                 Thread clientThread = new Thread(clientHandler);
                 clientThread.start();
             } catch (IOException e) {
