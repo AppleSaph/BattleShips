@@ -5,8 +5,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class Server implements ServerInterface, Runnable {
 
@@ -14,7 +12,7 @@ public class Server implements ServerInterface, Runnable {
     private ServerSocket serverSocket;
     private Thread serverThread;
     private HashMap<Integer, ClientHandler> clientHandlers = new HashMap<>();
-    private HashMap<Integer,String> usernames = new HashMap<>();
+    private HashMap<Integer, String> usernames = new HashMap<>();
 
     public Server(int port) {
         this.port = port;
@@ -67,10 +65,7 @@ public class Server implements ServerInterface, Runnable {
 
     @Override
     public int checkUsernameLoggedIn(String username) {
-        if(usernames.containsValue(username)){
-            return usernames.entrySet().stream().anyMatch(entry -> entry.getValue().equals(username)) ? usernames.entrySet().stream().filter(entry -> entry.getValue().equals(username)).findFirst().get().getKey() : -1;
-        }
-        return -1;
+        return usernames.keySet().stream().filter(key -> usernames.get(key).equals(username)).findFirst().orElse(-1);
     }
 
     @Override
