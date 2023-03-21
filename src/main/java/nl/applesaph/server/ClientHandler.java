@@ -21,13 +21,8 @@ public class ClientHandler implements Runnable {
         this.running = true;
         this.server = server;
         this.playerNumber = playerNumber;
-        addClient(playerNumber, this);
-    }
-
-    public synchronized void addClient(int playerNumber, ClientHandler clientHandler) {
-        server.addClient(playerNumber, clientHandler);
+        server.addClient(playerNumber,this);
         System.out.println("[CONNECT] " + socket.getInetAddress() + ":" + socket.getPort() + " with username " + server.getUsername(playerNumber) + " [" + playerNumber + "]");
-
     }
 
     private void parseIncomingMessage(String line) {
@@ -37,7 +32,7 @@ public class ClientHandler implements Runnable {
         }
     }
 
-    private synchronized void close() throws IOException {
+    private void close() throws IOException {
         System.out.println("[DISCONNECT] " + socket.getInetAddress() + ":" + socket.getPort() + " with username " + server.getUsername(playerNumber) + " [" + playerNumber + "]");
         server.removeClient(playerNumber);
         in.close();
