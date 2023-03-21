@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Random;
 
 public class Game {
+    private int grid[][] = new int[25][25];
     private HashMap<Integer, Player> players = new HashMap<>();
     private GameState gameState = GameState.LOBBY;
     private int currentPlayer = 1;
@@ -15,7 +16,6 @@ public class Game {
     }
 
     public void initGrid() {
-        int grid[][] = new int[25][25];
         Random random = new Random();
         for (Integer integer : players.keySet()) {
 

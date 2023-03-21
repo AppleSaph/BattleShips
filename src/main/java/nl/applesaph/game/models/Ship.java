@@ -27,6 +27,15 @@ public class Ship {
         }
     }
 
+    public boolean hasSunk(){
+        for (ShipPart shipPart : shipParts) {
+            if (!shipPart.isHit()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public void addShipPart(int x, int y) {
         shipParts.add(new ShipPart(x, y,false));
     }
