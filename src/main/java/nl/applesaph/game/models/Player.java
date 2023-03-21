@@ -29,4 +29,14 @@ public class Player {
         ships.add(ship);
     }
 
+    public boolean hasLost() {
+        for (Ship ship : ships) {
+            if (!ship.hasSunk()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
 }
