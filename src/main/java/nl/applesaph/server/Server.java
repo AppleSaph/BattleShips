@@ -81,12 +81,12 @@ public class Server implements ServerInterface, Runnable {
     }
 
     @Override
-    public void removeClient(int playerNumber) {
+    public synchronized void removeClient(int playerNumber) {
         clientHandlers.remove(playerNumber);
     }
 
     @Override
-    public void addClient(int playerNumber, ClientHandler clientHandler) {
+    public synchronized void addClient(int playerNumber, ClientHandler clientHandler) {
         clientHandlers.put(playerNumber, clientHandler);
     }
 
