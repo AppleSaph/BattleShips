@@ -1,5 +1,8 @@
 package nl.applesaph.server;
 
+import nl.applesaph.Main;
+import nl.applesaph.game.models.Player;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -57,7 +60,9 @@ public class Server implements ServerInterface, Runnable {
 
     @Override
     public void handleTurnMessage(ClientHandler client, String message) {
+        if(Main.getGame().isTurn(client.getPlayerNumber())){
 
+        }
     }
 
     @Override
@@ -145,6 +150,7 @@ public class Server implements ServerInterface, Runnable {
                 } else {
                     playerNumber = usernames.size() + 1;
                     usernames.put(playerNumber, username);
+                    Main.getGame().addPlayer(playerNumber, new Player(playerNumber,username));
                 }
                 ClientHandler clientHandler = new ClientHandler(socket, this, playerNumber);
                 Thread clientThread = new Thread(clientHandler);

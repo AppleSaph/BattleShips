@@ -1,5 +1,6 @@
 package nl.applesaph;
 
+import nl.applesaph.game.Game;
 import nl.applesaph.server.Server;
 
 import java.util.Scanner;
@@ -7,6 +8,7 @@ import java.util.Scanner;
 public class Main {
 
     private static boolean exit = false;
+    private static Game game = new Game();
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -42,5 +44,9 @@ public class Main {
             }
         }
         server.stop();
+    }
+
+    public static Game getGame() {
+        return game;
     }
 }
