@@ -1,6 +1,8 @@
 package nl.applesaph.server;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
@@ -120,13 +122,31 @@ public class Server implements ServerInterface, Runnable {
         });
     }
 
+    public synchronized String getUsername(int playerNumber){
+        return usernames.get(playerNumber);
+    }
+
     @Override
     public void run() {
         boolean running = true;
         while (running && !serverSocket.isClosed()) {
             try {
                 Socket socket = serverSocket.accept();
-                ClientHandler clientHandler = new ClientHandler(socket, this,clientHandlers.size()+1);
+                //check for the first message, this should be the username
+                BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                String username = in.readLine();
+                int playerNumber = checkUsernameLoggedIn(username);
+                if(playerNumber != -1){
+                    ClientHandler clientHandler = new ClientHandler(socket, this, playerNumber);
+                    Thread clientThread = new Thread(clientHandler);
+                    clientThread.start();
+                    clientHandlers.replace(playerNumber, clientHandler);
+                    continue;
+                } else {
+                    playerNumber = usernames.size() + 1;
+                    usernames.put(playerNumber, username);
+                }
+                ClientHandler clientHandler = new ClientHandler(socket, this, playerNumber);
                 Thread clientThread = new Thread(clientHandler);
                 clientThread.start();
             } catch (IOException e) {

@@ -22,18 +22,18 @@ public class ClientHandler implements Runnable {
         this.server = server;
         this.playerNumber = playerNumber;
         server.addClient(playerNumber,this);
-        System.out.println("[CONNECT] " + socket.getInetAddress() + ":" + socket.getPort());
-        send("Welcome to the BattleShips server! You are player " + playerNumber);
+        System.out.println("[CONNECT] " + socket.getInetAddress() + ":" + socket.getPort() + " with username " + server.getUsername(playerNumber) + " [" + playerNumber + "]");
     }
 
     private void parseIncomingMessage(String line) {
         if (!line.equals("")) {
+            System.out.println("[" + playerNumber + "] " + line);
             send(line);
         }
     }
 
     private void close() throws IOException {
-        System.out.println("[DISCONNECT] " + socket.getInetAddress() + ":" + socket.getPort());
+        System.out.println("[DISCONNECT] " + socket.getInetAddress() + ":" + socket.getPort() + " with username " + server.getUsername(playerNumber) + " [" + playerNumber + "]");
         server.removeClient(playerNumber);
         in.close();
         out.close();
