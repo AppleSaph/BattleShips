@@ -13,6 +13,7 @@ public class Ship {
     public boolean isHit(int x, int y){
         for (ShipPart shipPart : shipParts) {
             if (shipPart.getX() == x && shipPart.getY() == y) {
+                hitPart(x, y);
                 return true;
             }
         }

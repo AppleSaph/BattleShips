@@ -2,17 +2,20 @@ package nl.applesaph.game;
 
 import nl.applesaph.game.models.Player;
 import nl.applesaph.game.models.Ship;
+import nl.applesaph.server.Server;
 
 import java.util.HashMap;
 import java.util.Random;
 
 public class Game {
+    private Server server;
     private int grid[][] = new int[25][25];
     private HashMap<Integer, Player> players = new HashMap<>();
     private GameState gameState = GameState.LOBBY;
     private int currentPlayer = 1;
 
-    public Game() {
+    public Game(Server server) {
+        this.server = server;
     }
 
     public void initGrid() {
@@ -114,5 +117,9 @@ public class Game {
 
     public boolean isTurn(int playerNumber) {
         return playerNumber == currentPlayer;
+    }
+
+    public void handleTurnMessage(int playerNumber, String message) {
+
     }
 }

@@ -13,6 +13,7 @@ public class ClientHandler implements Runnable {
     private final BufferedReader in;
     private Server server;
     private boolean running;
+    private long lastPong;
 
     public ClientHandler(Socket socket, Server server, int playerNumber) throws IOException {
         this.socket = socket;
@@ -21,14 +22,26 @@ public class ClientHandler implements Runnable {
         this.running = true;
         this.server = server;
         this.playerNumber = playerNumber;
-        server.addClient(playerNumber,this);
+        server.addClient(playerNumber, this);
         System.out.println("[CONNECT] " + socket.getInetAddress() + ":" + socket.getPort() + " with username " + server.getUsername(playerNumber) + " [" + playerNumber + "]");
     }
 
-    private void parseIncomingMessage(String line) {
+    private void parseIncomingMessage(String line) throws IOException {
         if (!line.equals("")) {
-            System.out.println("[" + playerNumber + "] " + line);
-            send(line);
+            switch (line.split(" ")[0]) {
+                case "EXIT" -> {
+                    server.handleCommand(ReceiveCommand.EXIT, this, line);
+                    close();
+                }
+                case "MOVE" -> server.handleCommand(ReceiveCommand.MOVE, this, line);
+                case "PING" -> server.handleCommand(ReceiveCommand.PING, this, line);
+                case "PONG" -> server.handleCommand(ReceiveCommand.PONG, this, line);
+                default -> {
+                    System.out.println("[" + playerNumber + "] " + line);
+                    server.sendToAll(line);
+                }
+            }
+
         }
     }
 
@@ -42,7 +55,7 @@ public class ClientHandler implements Runnable {
 
     protected void send(String message) {
         //send message to client
-        if(!running){
+        if (!running) {
             throw new IllegalStateException("Not running");
         }
         if (!socket.isConnected()) {
@@ -74,7 +87,15 @@ public class ClientHandler implements Runnable {
         }
     }
 
-    public int getPlayerNumber(){
+    public int getPlayerNumber() {
         return playerNumber;
+    }
+
+    public void setLastPong(long lastPong) {
+        this.lastPong = lastPong;
+    }
+
+    public long getLastPong() {
+        return lastPong;
     }
 }

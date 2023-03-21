@@ -1,6 +1,7 @@
 package nl.applesaph.server;
 
 import nl.applesaph.Main;
+import nl.applesaph.game.Game;
 import nl.applesaph.game.models.Player;
 
 import java.io.BufferedReader;
@@ -14,6 +15,7 @@ import java.util.List;
 public class Server implements ServerInterface, Runnable {
 
     private int port;
+    private Game game = new Game(this);
     private ServerSocket serverSocket;
     private Thread serverThread;
     private HashMap<Integer, ClientHandler> clientHandlers = new HashMap<>();
@@ -60,7 +62,8 @@ public class Server implements ServerInterface, Runnable {
 
     @Override
     public void handleTurnMessage(ClientHandler client, String message) {
-        if(Main.getGame().isTurn(client.getPlayerNumber())){
+        if(game.isTurn(client.getPlayerNumber())){
+            game.handleTurnMessage(client.getPlayerNumber(), message);
 
         }
     }
@@ -150,7 +153,7 @@ public class Server implements ServerInterface, Runnable {
                 } else {
                     playerNumber = usernames.size() + 1;
                     usernames.put(playerNumber, username);
-                    Main.getGame().addPlayer(playerNumber, new Player(playerNumber,username));
+                    game.addPlayer(playerNumber, new Player(playerNumber,username));
                 }
                 ClientHandler clientHandler = new ClientHandler(socket, this, playerNumber);
                 Thread clientThread = new Thread(clientHandler);
@@ -159,6 +162,50 @@ public class Server implements ServerInterface, Runnable {
                 e.printStackTrace();
                 running = false;
             }
+        }
+    }
+
+    public void handleCommand(ReceiveCommand command, ClientHandler clientHandler, String line) {
+        switch (command){
+            case EXIT:
+                game.removePlayer(clientHandler.getPlayerNumber());
+                break;
+            case MOVE:
+                handleTurnMessage(clientHandler, line);
+                break;
+            case PING:
+                clientHandler.send("PONG");
+                break;
+            case PONG:
+                clientHandler.setLastPong(System.currentTimeMillis());
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void sendCommand(SendCommand command, String line, int currentPlayer) {
+        switch (command){
+            case HIT:
+                sendToAll(line);
+            case MISS:
+                sendToAll(line);
+            case WINNER:
+
+            case LOST:
+
+            case ERROR:
+
+            case EXIT:
+
+            case TURN:
+                sendToAll("TURN~" + currentPlayer);
+            case NEWGAME:
+
+            case PING:
+
+            case PONG:
+
         }
     }
 }

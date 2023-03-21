@@ -25,6 +25,15 @@ public class Player {
         return ships;
     }
 
+    public boolean isHit(int x, int y){
+        for (Ship ship : ships) {
+            if (ship.isHit(x, y)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void addShip(Ship ship) {
         ships.add(ship);
     }
