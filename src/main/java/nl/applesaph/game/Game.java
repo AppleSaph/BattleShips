@@ -2,20 +2,47 @@ package nl.applesaph.game;
 
 import nl.applesaph.game.models.Player;
 import nl.applesaph.game.models.Ship;
+import nl.applesaph.server.SendCommand;
 import nl.applesaph.server.Server;
 
-import java.util.HashMap;
-import java.util.Random;
+import java.util.*;
 
 public class Game {
     private Server server;
     private int grid[][] = new int[25][25];
     private HashMap<Integer, Player> players = new HashMap<>();
+    private LinkedHashMap<Integer, Player> alivePlayers = (LinkedHashMap<Integer, Player>) players;
     private GameState gameState = GameState.LOBBY;
     private int currentPlayer = 1;
 
     public Game(Server server) {
         this.server = server;
+    }
+
+    private void gameLoop() {
+        if (gameState != GameState.RUNNING) return;
+
+        // Remove players from alive players.
+        for (int alivePlayer: alivePlayers.keySet()) {
+            if (alivePlayers.get(alivePlayer).hasLost()) {
+                alivePlayers.remove(alivePlayer);
+            }
+        }
+
+        // End the game if there is only one player alive.
+        if (alivePlayers.size() == 1) {
+            endGame(alivePlayers.entrySet().iterator().next().getValue());
+            return;
+        }
+
+        // Change player turn.
+        do {
+            if (currentPlayer == players.size()) {
+                currentPlayer = 1;
+            } else {
+                currentPlayer++;
+            }
+        } while (!players.get(currentPlayer).hasLost());
     }
 
     public void initGrid() {
@@ -99,8 +126,9 @@ public class Game {
         }
     }
 
-    public void endGame() {
+    public void endGame(Player winner) {
         gameState = GameState.FINISHED;
+        server.sendCommand(SendCommand.WINNER, "", winner.getPlayerNumber());
     }
 
     public GameState getGameState() {
