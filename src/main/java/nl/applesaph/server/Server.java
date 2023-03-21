@@ -1,6 +1,5 @@
 package nl.applesaph.server;
 
-import nl.applesaph.Main;
 import nl.applesaph.game.Game;
 import nl.applesaph.game.models.Player;
 
@@ -63,7 +62,7 @@ public class Server implements ServerInterface, Runnable {
     @Override
     public void handleTurnMessage(ClientHandler client, int x, int y) {
         if (game.isTurn(client.getPlayerNumber())) {
-            game.handleTurnMessage(client.getPlayerNumber(), x,y);
+            game.handleTurnMessage(client.getPlayerNumber(), x, y);
 
         }
     }
@@ -116,7 +115,9 @@ public class Server implements ServerInterface, Runnable {
 
     @Override
     public void sendToClient(String message, int playerNumber) {
-        clientHandlers.get(playerNumber).send(message);
+        if (clientHandlers.containsKey(playerNumber)) {
+            clientHandlers.get(playerNumber).send(message);
+        }
     }
 
     @Override
@@ -158,6 +159,7 @@ public class Server implements ServerInterface, Runnable {
                 ClientHandler clientHandler = new ClientHandler(socket, this, playerNumber);
                 Thread clientThread = new Thread(clientHandler);
                 clientThread.start();
+                clientHandlers.put(playerNumber, clientHandler);
             } catch (IOException e) {
                 e.printStackTrace();
                 running = false;
@@ -172,8 +174,16 @@ public class Server implements ServerInterface, Runnable {
                 break;
             case MOVE:
                 if (!tryParse(line.split("~")[1]) && !tryParse(line.split("~")[2])) {
-                    clientHandler.send("ERROR~Invalid move");
-                break;
+                    sendCommand(SendCommand.ERROR, "Invalid move", clientHandler.getPlayerNumber());
+                    break;
+                }
+                if (!game.isTurn(clientHandler.getPlayerNumber())) {
+                    sendCommand(SendCommand.ERROR, "Not your turn", clientHandler.getPlayerNumber());
+                    break;
+                }
+                if (Integer.parseInt(line.split("~")[1]) < 0 || Integer.parseInt(line.split("~")[1]) > game.getGrid().length || Integer.parseInt(line.split("~")[2]) < 0 || Integer.parseInt(line.split("~")[2]) > game.getGrid()[0].length) {
+                    sendCommand(SendCommand.ERROR, "X and Y need to be between 0 and " + game.getGrid().length, clientHandler.getPlayerNumber());
+                    break;
                 }
                 handleTurnMessage(clientHandler, Integer.parseInt(line.split("~")[1]), Integer.parseInt(line.split("~")[2]));
                 break;
@@ -182,6 +192,9 @@ public class Server implements ServerInterface, Runnable {
                 break;
             case PONG:
                 clientHandler.setLastPong(System.currentTimeMillis());
+                break;
+            case NEWGAME:
+                game.startGame();
                 break;
             default:
                 break;
@@ -197,28 +210,18 @@ public class Server implements ServerInterface, Runnable {
         }
     }
 
-    public void sendCommand(SendCommand command, String line, int currentPlayer) {
+    public void sendCommand(SendCommand command, String message, int player) {
         switch (command) {
-            case HIT:
-                sendToAll("HIT~" + line + "~" + currentPlayer);
-            case MISS:
-                sendToAll("MISS~" + line + "~" + currentPlayer);
-            case WINNER:
-                sendToAll("WINNER~" + currentPlayer);
-            case LOST:
-                sendToAll("LOST~" + currentPlayer);
-            case ERROR:
-                sendToAll("ERROR~" + line);
-            case EXIT:
-                sendToAll("EXIT");
-            case TURN:
-                sendToAll("TURN~" + currentPlayer);
-            case NEWGAME:
-                sendToAll("NEWGAME" + currentPlayer);
-            case PING:
-                sendToClient("PING", currentPlayer);
-            case PONG:
-                sendToClient("PONG", currentPlayer);
+            case HIT -> sendToAll("HIT~" + message + "~" + player);
+            case MISS -> sendToAll("MISS~" + message);
+            case WINNER -> sendToAll("WINNER~" + player);
+            case LOST -> sendToAll("LOST~" + player);
+            case ERROR -> sendToClient("ERROR~" + message, player);
+            case EXIT -> sendToAll("EXIT");
+            case TURN -> sendToAll("TURN~" + player);
+            case NEWGAME -> sendToAll("NEWGAME" + player);
+            case PING -> sendToClient("PING", player);
+            case PONG -> sendToClient("PONG", player);
         }
     }
 }

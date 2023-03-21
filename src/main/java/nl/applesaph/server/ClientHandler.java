@@ -36,6 +36,7 @@ public class ClientHandler implements Runnable {
                 case "MOVE" -> server.handleCommand(ReceiveCommand.MOVE, this, line);
                 case "PING" -> server.handleCommand(ReceiveCommand.PING, this, line);
                 case "PONG" -> server.handleCommand(ReceiveCommand.PONG, this, line);
+                case "NEWGAME" -> server.handleCommand(ReceiveCommand.NEWGAME, this, line);
                 default -> {
                     server.sendToClient("ERROR~Invalid command", playerNumber);
                 }

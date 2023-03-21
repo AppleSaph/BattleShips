@@ -5,13 +5,15 @@ import nl.applesaph.game.models.Ship;
 import nl.applesaph.server.SendCommand;
 import nl.applesaph.server.Server;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Random;
 
 public class Game {
     private Server server;
     private int grid[][] = new int[25][25];
-    private HashMap<Integer, Player> players = new HashMap<>();
-    private LinkedHashMap<Integer, Player> alivePlayers = (LinkedHashMap<Integer, Player>) players;
+    private final HashMap<Integer, Player> players = new HashMap<>();
     private GameState gameState = GameState.LOBBY;
     private int currentPlayer = 1;
 
@@ -20,29 +22,56 @@ public class Game {
     }
 
     private void gameLoop() {
+
         if (gameState != GameState.RUNNING) return;
-
-        // Remove players from alive players.
-        for (int alivePlayer: alivePlayers.keySet()) {
-            if (alivePlayers.get(alivePlayer).hasLost()) {
-                alivePlayers.remove(alivePlayer);
-            }
-        }
-
-        // End the game if there is only one player alive.
-        if (alivePlayers.size() == 1) {
-            endGame(alivePlayers.entrySet().iterator().next().getValue());
+        int winner = checkWinner();
+        //TODO: WORKING ON THIS
+        if (winner != -1) {
+            gameState = GameState.FINISHED;
+            server.sendCommand(SendCommand.WINNER, "", winner);
             return;
         }
 
-        // Change player turn.
-        do {
-            if (currentPlayer == players.size()) {
-                currentPlayer = 1;
-            } else {
-                currentPlayer++;
+        server.sendCommand(SendCommand.TURN, "", currentPlayer);
+
+    }
+
+    private int checkWinner(){
+        //TODO: fix???
+        int amountOfPlayersAlive = 0;
+        int winner = -1;
+        for(Player player : players.values()){
+            if (!player.hasLost()){
+                amountOfPlayersAlive++;
+                winner = player.getPlayerNumber();
             }
-        } while (!players.get(currentPlayer).hasLost());
+        }
+        if(amountOfPlayersAlive == 1){
+            return winner;
+        }
+        else{
+            return -1;
+        }
+    }
+
+    private int changeTurn(int currentPlayer){
+        //if next player is not dead, return next player, wrap around if needed
+        if(currentPlayer < players.size()){
+            if(!players.get(currentPlayer+1).hasLost()){
+                return currentPlayer+1;
+            }
+            else{
+                return changeTurn(currentPlayer+1);
+            }
+        }
+        else{
+            if(!players.get(1).hasLost()){
+                return 1;
+            }
+            else{
+                return changeTurn(1+1);
+            }
+        }
     }
 
     public void initGrid() {
@@ -111,15 +140,22 @@ public class Game {
     public void startGame() {
         initGrid();
         gameState = GameState.RUNNING;
+        server.sendCommand(SendCommand.NEWGAME, "", 0);
+        gameLoop();
+        printGrid(grid);
     }
 
     public void printGrid(int[][] grid) {
+        System.out.println("  0123456789111111111122222");
+        System.out.println("            012345678901234");
         for (int y = 0; y < grid.length; y++) {
-            for (int[] ints : grid) {
-                if (ints[y] == 0) {
+            if(y < 10) System.out.print("0");
+            System.out.print(y);
+            for (int x = 0; x < grid[y].length; x++) {
+                if (grid[x][y] == 0) {
                     System.out.print("_");
                 } else {
-                    System.out.print(ints[y]);
+                    System.out.print(grid[x][y]);
                 }
             }
             System.out.println();
@@ -131,25 +167,27 @@ public class Game {
         server.sendCommand(SendCommand.WINNER, "", winner.getPlayerNumber());
     }
 
-    public GameState getGameState() {
-        return gameState;
-    }
-
-    public void setGameState(GameState gameState) {
-        this.gameState = gameState;
-    }
-
-    public int getCurrentPlayer() {
-        return currentPlayer;
-    }
-
     public boolean isTurn(int playerNumber) {
         return playerNumber == currentPlayer;
     }
 
     public void handleTurnMessage(int playerNumber, int x, int y) {
         if (isTurn(playerNumber)) {
-
+            if (grid[x][y] != 0 && grid[x][y] != -1) {
+                players.get(grid[x][y]).isHit(x, y);
+                server.sendCommand(SendCommand.HIT, "", grid[x][y]);
+                grid[x][y] = 0;
+            } else {
+                server.sendCommand(SendCommand.MISS, "", playerNumber);
+                grid[x][y] = -1;
+            }
+            currentPlayer = changeTurn(currentPlayer);
+            gameLoop();
+            printGrid(grid);
         }
+    }
+
+    public int[][] getGrid() {
+        return grid;
     }
 }

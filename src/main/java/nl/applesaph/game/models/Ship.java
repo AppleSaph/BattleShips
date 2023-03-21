@@ -13,20 +13,13 @@ public class Ship {
     public boolean isHit(int x, int y){
         for (ShipPart shipPart : shipParts) {
             if (shipPart.getX() == x && shipPart.getY() == y) {
-                hitPart(x, y);
+                shipPart.hit(true);
                 return true;
             }
         }
         return false;
     }
 
-    public void hitPart(int x, int y) {
-        for (ShipPart shipPart : shipParts) {
-            if (shipPart.getX() == x && shipPart.getY() == y) {
-                shipPart.hit(true);
-            }
-        }
-    }
 
     public boolean hasSunk(){
         for (ShipPart shipPart : shipParts) {
