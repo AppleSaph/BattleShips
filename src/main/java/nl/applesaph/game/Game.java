@@ -119,7 +119,9 @@ public class Game {
         return playerNumber == currentPlayer;
     }
 
-    public void handleTurnMessage(int playerNumber, String message) {
+    public void handleTurnMessage(int playerNumber, int x, int y) {
+        if (isTurn(playerNumber)) {
 
+        }
     }
 }

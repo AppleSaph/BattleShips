@@ -61,9 +61,9 @@ public class Server implements ServerInterface, Runnable {
     }
 
     @Override
-    public void handleTurnMessage(ClientHandler client, String message) {
-        if(game.isTurn(client.getPlayerNumber())){
-            game.handleTurnMessage(client.getPlayerNumber(), message);
+    public void handleTurnMessage(ClientHandler client, int x, int y) {
+        if (game.isTurn(client.getPlayerNumber())) {
+            game.handleTurnMessage(client.getPlayerNumber(), x,y);
 
         }
     }
@@ -130,7 +130,7 @@ public class Server implements ServerInterface, Runnable {
         });
     }
 
-    public synchronized String getUsername(int playerNumber){
+    public synchronized String getUsername(int playerNumber) {
         return usernames.get(playerNumber);
     }
 
@@ -144,7 +144,7 @@ public class Server implements ServerInterface, Runnable {
                 BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 String username = in.readLine();
                 int playerNumber = checkUsernameLoggedIn(username);
-                if(playerNumber != -1){
+                if (playerNumber != -1) {
                     ClientHandler clientHandler = new ClientHandler(socket, this, playerNumber);
                     Thread clientThread = new Thread(clientHandler);
                     clientThread.start();
@@ -153,7 +153,7 @@ public class Server implements ServerInterface, Runnable {
                 } else {
                     playerNumber = usernames.size() + 1;
                     usernames.put(playerNumber, username);
-                    game.addPlayer(playerNumber, new Player(playerNumber,username));
+                    game.addPlayer(playerNumber, new Player(playerNumber, username));
                 }
                 ClientHandler clientHandler = new ClientHandler(socket, this, playerNumber);
                 Thread clientThread = new Thread(clientHandler);
@@ -166,12 +166,16 @@ public class Server implements ServerInterface, Runnable {
     }
 
     public void handleCommand(ReceiveCommand command, ClientHandler clientHandler, String line) {
-        switch (command){
+        switch (command) {
             case EXIT:
                 game.removePlayer(clientHandler.getPlayerNumber());
                 break;
             case MOVE:
-                handleTurnMessage(clientHandler, line);
+                if (!tryParse(line.split("~")[1]) && !tryParse(line.split("~")[2])) {
+                    clientHandler.send("ERROR~Invalid move");
+                break;
+                }
+                handleTurnMessage(clientHandler, Integer.parseInt(line.split("~")[1]), Integer.parseInt(line.split("~")[2]));
                 break;
             case PING:
                 clientHandler.send("PONG");
@@ -184,8 +188,17 @@ public class Server implements ServerInterface, Runnable {
         }
     }
 
+    private boolean tryParse(String value) {
+        try {
+            Integer.parseInt(value);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
     public void sendCommand(SendCommand command, String line, int currentPlayer) {
-        switch (command){
+        switch (command) {
             case HIT:
                 sendToAll("HIT~" + line + "~" + currentPlayer);
             case MISS:

@@ -14,7 +14,7 @@ public interface ServerInterface {
 
     boolean inGame(ClientHandler clientHandler);
 
-    void handleTurnMessage(ClientHandler client, String message);
+    void handleTurnMessage(ClientHandler client, int x, int y);
 
     void handleSetupTurnMessage(ClientHandler client, String message);
 
