@@ -73,4 +73,8 @@ public class ClientHandler implements Runnable {
             e.printStackTrace();
         }
     }
+
+    public int getPlayerNumber(){
+        return playerNumber;
+    }
 }
