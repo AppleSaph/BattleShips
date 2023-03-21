@@ -1,15 +1,21 @@
 package nl.applesaph.game;
 
+import nl.applesaph.game.models.Player;
+import nl.applesaph.game.models.Ship;
+
 import java.util.HashMap;
 import java.util.Random;
 
 public class Game {
-
-    private int grid[][] = new int[25][25];
     private HashMap<Integer, Player> players = new HashMap<>();
     private GameState gameState = GameState.LOBBY;
+    private int currentPlayer = 1;
 
-    private void initGrid() {
+    public Game() {
+    }
+
+    public void initGrid() {
+        int grid[][] = new int[25][25];
         Random random = new Random();
         for (Integer integer : players.keySet()) {
 
@@ -44,6 +50,11 @@ public class Game {
                 grid[x + 1][y] = integer;
                 grid[x + 2][y] = integer;
             }
+            Ship ship = new Ship();
+            ship.addShipPart(x, y);
+            ship.addShipPart(x, y + 1);
+            ship.addShipPart(x, y + 2);
+            players.get(integer).addShip(ship);
         }
     }
 
@@ -72,7 +83,7 @@ public class Game {
         gameState = GameState.RUNNING;
     }
 
-    public void printGrid() {
+    public void printGrid(int[][] grid) {
         for (int y = 0; y < grid.length; y++) {
             for (int[] ints : grid) {
                 if (ints[y] == 0) {
@@ -93,15 +104,15 @@ public class Game {
         return gameState;
     }
 
-    public int[][] getGrid() {
-        return grid;
-    }
-
-    public void setGrid(int[][] grid) {
-        this.grid = grid;
-    }
-
     public void setGameState(GameState gameState) {
         this.gameState = gameState;
+    }
+
+    public int getCurrentPlayer() {
+        return currentPlayer;
+    }
+
+    public boolean isTurn(int playerNumber) {
+        return playerNumber == currentPlayer;
     }
 }
