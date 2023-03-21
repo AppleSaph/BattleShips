@@ -187,25 +187,25 @@ public class Server implements ServerInterface, Runnable {
     public void sendCommand(SendCommand command, String line, int currentPlayer) {
         switch (command){
             case HIT:
-                sendToAll(line);
+                sendToAll("HIT~" + line + "~" + currentPlayer);
             case MISS:
-                sendToAll(line);
+                sendToAll("MISS~" + line + "~" + currentPlayer);
             case WINNER:
-
+                sendToAll("WINNER~" + currentPlayer);
             case LOST:
-
+                sendToAll("LOST~" + currentPlayer);
             case ERROR:
-
+                sendToAll("ERROR~" + line);
             case EXIT:
-
+                sendToAll("EXIT");
             case TURN:
                 sendToAll("TURN~" + currentPlayer);
             case NEWGAME:
-
+                sendToAll("NEWGAME" + currentPlayer);
             case PING:
-
+                sendToClient("PING", currentPlayer);
             case PONG:
-
+                sendToClient("PONG", currentPlayer);
         }
     }
 }
