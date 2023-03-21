@@ -28,7 +28,7 @@ public class ClientHandler implements Runnable {
 
     private void parseIncomingMessage(String line) throws IOException {
         if (!line.equals("")) {
-            switch (line.split(" ")[0]) {
+            switch (line.split("~")[0]) {
                 case "EXIT" -> {
                     server.handleCommand(ReceiveCommand.EXIT, this, line);
                     close();
@@ -37,8 +37,7 @@ public class ClientHandler implements Runnable {
                 case "PING" -> server.handleCommand(ReceiveCommand.PING, this, line);
                 case "PONG" -> server.handleCommand(ReceiveCommand.PONG, this, line);
                 default -> {
-                    System.out.println("[" + playerNumber + "] " + line);
-                    server.sendToAll(line);
+                    server.sendToClient("ERROR~Invalid command", playerNumber);
                 }
             }
 

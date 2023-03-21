@@ -166,21 +166,11 @@ public class Server implements ServerInterface, Runnable {
     }
 
     public void handleCommand(ReceiveCommand command, ClientHandler clientHandler, String line) {
-        switch (command){
-            case EXIT:
-                game.removePlayer(clientHandler.getPlayerNumber());
-                break;
-            case MOVE:
-                handleTurnMessage(clientHandler, line);
-                break;
-            case PING:
-                clientHandler.send("PONG");
-                break;
-            case PONG:
-                clientHandler.setLastPong(System.currentTimeMillis());
-                break;
-            default:
-                break;
+        switch (command) {
+            case EXIT -> game.removePlayer(clientHandler.getPlayerNumber());
+            case MOVE -> handleTurnMessage(clientHandler, line);
+            case PING -> clientHandler.send("PONG");
+            case PONG -> clientHandler.setLastPong(System.currentTimeMillis());
         }
     }
 
