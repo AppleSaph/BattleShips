@@ -1,11 +1,11 @@
-# BattleShipsClient
+# BattleShipsServer
 
-This is a client for the Battleships game.
+This is a server for the Battleships game.
 
 ## How to run
 1. Clone the repository
 2. Run the Main class
-3. Enter the server address, port and username
+3. Enter the port number
 4. Enjoy!
 
 ## Server Protocol
