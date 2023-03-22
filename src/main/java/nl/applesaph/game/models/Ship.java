@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class Ship {
 
-    private ArrayList<ShipPart> shipParts;
+    private final ArrayList<ShipPart> shipParts;
 
     public Ship() {
         shipParts = new ArrayList<>();
