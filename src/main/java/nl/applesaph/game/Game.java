@@ -15,7 +15,10 @@ public class Game {
     private int grid[][] = new int[25][25];
     private final HashMap<Integer, Player> players = new HashMap<>();
     private GameState gameState = GameState.LOBBY;
-    private int currentPlayer = 1;
+    private int currentPlayer = 0;
+
+    private int firstPlayer = 0;
+    private int lastPlayer = 0;
 
     public Game(Server server) {
         this.server = server;
@@ -56,8 +59,9 @@ public class Game {
 
     private int changeTurn(int currentPlayer){
         //if next player is not dead, return next player, wrap around if needed
-        if(currentPlayer < players.size()){
-            if(!players.get(currentPlayer+1).hasLost()){
+        if(currentPlayer < lastPlayer){
+            //check if the next player exicts
+            if(players.get(currentPlayer + 1) != null && !players.get(currentPlayer+1).hasLost()){
                 return currentPlayer+1;
             }
             else{
@@ -65,11 +69,12 @@ public class Game {
             }
         }
         else{
-            if(!players.get(1).hasLost()){
-                return 1;
+            if(players.get(firstPlayer) != null && !players.get(firstPlayer).hasLost()){
+                return firstPlayer;
             }
             else{
-                return changeTurn(1+1);
+                firstPlayer++;
+                return changeTurn(firstPlayer + 1);
             }
         }
     }
@@ -141,6 +146,13 @@ public class Game {
         initGrid();
         gameState = GameState.RUNNING;
         server.sendCommand(SendCommand.NEWGAME, "", 0);
+        currentPlayer = players.keySet().iterator().next();
+        firstPlayer = currentPlayer;
+        for (Integer integer : players.keySet()) {
+            if (integer > lastPlayer) {
+                lastPlayer = integer;
+            }
+        }
         gameLoop();
         printGrid(grid);
     }

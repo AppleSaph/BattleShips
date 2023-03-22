@@ -154,7 +154,6 @@ public class Server implements ServerInterface, Runnable {
                 } else {
                     playerNumber = usernames.size() + 1;
                     usernames.put(playerNumber, username);
-                    game.addPlayer(playerNumber, new Player(playerNumber, username));
                 }
                 ClientHandler clientHandler = new ClientHandler(socket, this, playerNumber);
                 Thread clientThread = new Thread(clientHandler);
@@ -194,6 +193,7 @@ public class Server implements ServerInterface, Runnable {
                 clientHandler.setLastPong(System.currentTimeMillis());
                 break;
             case NEWGAME:
+                clientHandlers.forEach((key, value) -> game.addPlayer(key, new Player(key, getUsername(key))));
                 game.startGame();
                 break;
             default:
