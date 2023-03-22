@@ -11,7 +11,7 @@ public class ClientHandler implements Runnable {
     private final Socket socket;
     private final PrintWriter out;
     private final BufferedReader in;
-    private Server server;
+    private final Server server;
     private boolean running;
     private long lastPong;
 
@@ -38,9 +38,7 @@ public class ClientHandler implements Runnable {
                 case "PING" -> server.handleCommand(ReceiveCommand.PING, this, line);
                 case "PONG" -> server.handleCommand(ReceiveCommand.PONG, this, line);
                 case "NEWGAME" -> server.handleCommand(ReceiveCommand.NEWGAME, this, line);
-                default -> {
-                    server.sendToClient("ERROR~Invalid command", playerNumber);
-                }
+                default -> server.sendToClient("ERROR~Invalid command", playerNumber);
             }
 
         }

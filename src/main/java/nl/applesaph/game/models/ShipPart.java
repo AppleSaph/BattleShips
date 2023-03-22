@@ -2,7 +2,8 @@ package nl.applesaph.game.models;
 
 public class ShipPart {
 
-    private int x,y;
+    private final int x;
+    private final int y;
     private boolean isHit;
 
     public ShipPart(int x, int y, boolean isHit) {
@@ -10,7 +11,8 @@ public class ShipPart {
         this.y = y;
         this.isHit = isHit;
     }
-    public ShipPart(int x, int y){
+
+    public ShipPart(int x, int y) {
         this.x = x;
         this.y = y;
         this.isHit = false;

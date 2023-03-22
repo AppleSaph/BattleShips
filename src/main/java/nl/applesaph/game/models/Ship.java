@@ -10,7 +10,7 @@ public class Ship {
         shipParts = new ArrayList<>();
     }
 
-    public boolean isHit(int x, int y){
+    public boolean isHit(int x, int y) {
         for (ShipPart shipPart : shipParts) {
             if (shipPart.getX() == x && shipPart.getY() == y) {
                 shipPart.hit(true);
@@ -21,7 +21,7 @@ public class Ship {
     }
 
 
-    public boolean hasSunk(){
+    public boolean hasSunk() {
         for (ShipPart shipPart : shipParts) {
             if (!shipPart.isHit()) {
                 return false;
@@ -35,6 +35,6 @@ public class Ship {
     }
 
     public void addShipPart(int x, int y) {
-        shipParts.add(new ShipPart(x, y,false));
+        shipParts.add(new ShipPart(x, y, false));
     }
 }

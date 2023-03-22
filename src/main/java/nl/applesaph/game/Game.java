@@ -6,14 +6,12 @@ import nl.applesaph.game.models.ShipPart;
 import nl.applesaph.server.SendCommand;
 import nl.applesaph.server.Server;
 
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Random;
 
 public class Game {
-    private Server server;
-    private int grid[][] = new int[25][25];
+    private final Server server;
+    private final int[][] grid = new int[25][25];
     private final HashMap<Integer, Player> players = new HashMap<>();
     private GameState gameState = GameState.LOBBY;
     private int currentPlayer = 0;
@@ -40,39 +38,35 @@ public class Game {
 
     }
 
-    private int checkWinner(){
+    private int checkWinner() {
         int amountOfPlayersAlive = 0;
         int winner = -1;
-        for(Player player : players.values()){
-            if (!player.hasLost(grid)){
+        for (Player player : players.values()) {
+            if (!player.hasLost(grid)) {
                 amountOfPlayersAlive++;
                 winner = player.getPlayerNumber();
             }
         }
-        if(amountOfPlayersAlive == 1){
+        if (amountOfPlayersAlive == 1) {
             return winner;
-        }
-        else{
+        } else {
             return -1;
         }
     }
 
-    private int changeTurn(int currentPlayer){
+    private int changeTurn(int currentPlayer) {
         //if next player is not dead, return next player, wrap around if needed
-        if(currentPlayer < lastPlayer){
+        if (currentPlayer < lastPlayer) {
             //check if the next player exits
-            if(players.get(currentPlayer + 1) != null && !players.get(currentPlayer+1).hasLost(grid)){
-                return currentPlayer+1;
+            if (players.get(currentPlayer + 1) != null && !players.get(currentPlayer + 1).hasLost(grid)) {
+                return currentPlayer + 1;
+            } else {
+                return changeTurn(currentPlayer + 1);
             }
-            else{
-                return changeTurn(currentPlayer+1);
-            }
-        }
-        else{
-            if(players.get(firstPlayer) != null && !players.get(firstPlayer).hasLost(grid)){
+        } else {
+            if (players.get(firstPlayer) != null && !players.get(firstPlayer).hasLost(grid)) {
                 return firstPlayer;
-            }
-            else{
+            } else {
                 firstPlayer++;
                 return changeTurn(firstPlayer + 1);
             }
@@ -166,7 +160,7 @@ public class Game {
         System.out.println("  0123456789111111111122222");
         System.out.println("            012345678901234");
         for (int y = 0; y < grid.length; y++) {
-            if(y < 10) System.out.print("0");
+            if (y < 10) System.out.print("0");
             System.out.print(y);
             for (int x = 0; x < grid[y].length; x++) {
                 if (grid[x][y] == 0) {
