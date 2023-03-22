@@ -175,10 +175,10 @@ public class Game {
         if (isTurn(playerNumber)) {
             if (grid[x][y] != 0 && grid[x][y] != -1) {
                 players.get(grid[x][y]).isHit(x, y);
-                server.sendCommand(SendCommand.HIT, "", grid[x][y]);
+                server.sendCommand(SendCommand.HIT, x + "~" + y, grid[x][y]);
                 grid[x][y] = 0;
             } else {
-                server.sendCommand(SendCommand.MISS, "", playerNumber);
+                server.sendCommand(SendCommand.MISS, x + "~" + y, playerNumber);
                 grid[x][y] = -1;
             }
             currentPlayer = changeTurn(currentPlayer);
