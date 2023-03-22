@@ -24,6 +24,7 @@ public class ClientHandler implements Runnable {
         this.playerNumber = playerNumber;
         server.addClient(playerNumber, this);
         System.out.println("[CONNECT] " + socket.getInetAddress() + ":" + socket.getPort() + " with username " + server.getUsername(playerNumber) + " [" + playerNumber + "]");
+        server.sendCommand(SendCommand.HELLO, Integer.toString(playerNumber), playerNumber);
     }
 
     private void parseIncomingMessage(String line) throws IOException {

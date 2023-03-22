@@ -18,6 +18,7 @@ Communication between the client and the server is done using the following prot
 * 'PONG' - response to a PING from the server
 
 ### Server -> Client
+* 'HELLO\~playerNumber' - where playerNumber is the playerNumber of the player
 * 'HIT\~x\~y\~playerNumber' - where x and y are the coordinates of the hit, and playerNumber is the playerNumber of the player that is hit
 * 'MISS\~x\~y' - where x and y are the coordinates of the miss
 * 'WINNER~playerNumber' - where playerNumber is the playerNumber of the winner
