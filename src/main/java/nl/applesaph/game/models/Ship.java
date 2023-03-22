@@ -30,6 +30,10 @@ public class Ship {
         return true;
     }
 
+    public ArrayList<ShipPart> getShipParts() {
+        return shipParts;
+    }
+
     public void addShipPart(int x, int y) {
         shipParts.add(new ShipPart(x, y,false));
     }

@@ -223,6 +223,7 @@ public class Server implements ServerInterface, Runnable {
             case PING -> sendToClient("PING", player);
             case PONG -> sendToClient("PONG", player);
             case HELLO -> sendToClient("HELLO~" + message, player);
+            case POS -> sendToClient("POS~" + message, player);
         }
     }
 }

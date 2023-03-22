@@ -2,6 +2,7 @@ package nl.applesaph.game;
 
 import nl.applesaph.game.models.Player;
 import nl.applesaph.game.models.Ship;
+import nl.applesaph.game.models.ShipPart;
 import nl.applesaph.server.SendCommand;
 import nl.applesaph.server.Server;
 
@@ -149,6 +150,11 @@ public class Game {
         currentPlayer = players.keySet().iterator().next();
         firstPlayer = currentPlayer;
         for (Integer integer : players.keySet()) {
+            for (Ship ship : players.get(integer).getShips()) {
+                for (ShipPart part : ship.getShipParts()) {
+                    server.sendCommand(SendCommand.POS, part.getX() + "~" + part.getY(), integer);
+                }
+            }
             if (integer > lastPlayer) {
                 lastPlayer = integer;
             }
