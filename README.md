@@ -25,7 +25,7 @@ Communication between the client and the server is done using the following prot
 * 'LOST~playerNumber' - where playerNumber is the playerNumber of the player who lost
 * 'ERROR~message' - where message is the error message
 * 'EXIT' - to exit the game
-* 'TURN~playerNumber' - where playerNumber is the playerNumber of the player who's turn it is
-* 'NEWGAME~playerNumber' - where playerNumber is the playerNumber of the player who's turn it is
+* 'TURN~playerNumber' - where playerNumber is the playerNumber of the player whose turn it is
+* 'NEWGAME~playerNumber' - where playerNumber is the playerNumber of the player whose turn it is
 * 'PING' - to check if a client is still alive
 * 'PONG' - response to a PING from the client
