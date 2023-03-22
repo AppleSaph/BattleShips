@@ -1,4 +1,5 @@
 # BattleShipsServer
+Go to [BattleShipsClient](https://github.com/gerwintrip/BattleShipsClient) to find the client.
 
 This is a server for the Battleships game.
 
