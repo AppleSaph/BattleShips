@@ -28,7 +28,7 @@ public class Game {
 
         if (gameState != GameState.RUNNING) return;
         int winner = checkWinner();
-        //TODO: WORKING ON THIS
+
         if (winner != -1) {
             gameState = GameState.FINISHED;
             server.sendCommand(SendCommand.WINNER, "", winner);
@@ -40,7 +40,6 @@ public class Game {
     }
 
     private int checkWinner(){
-        //TODO: fix???
         int amountOfPlayersAlive = 0;
         int winner = -1;
         for(Player player : players.values()){
@@ -60,7 +59,7 @@ public class Game {
     private int changeTurn(int currentPlayer){
         //if next player is not dead, return next player, wrap around if needed
         if(currentPlayer < lastPlayer){
-            //check if the next player exicts
+            //check if the next player exits
             if(players.get(currentPlayer + 1) != null && !players.get(currentPlayer+1).hasLost(grid)){
                 return currentPlayer+1;
             }
