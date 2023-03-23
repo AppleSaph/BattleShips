@@ -178,6 +178,7 @@ public class Game {
     public void endGame(Player winner) {
         gameState = GameState.FINISHED;
         server.sendCommand(SendCommand.WINNER, "", winner.getPlayerNumber());
+        resetGame();
     }
 
     public boolean isTurn(int playerNumber) {
@@ -198,6 +199,16 @@ public class Game {
             gameLoop();
             printGrid(grid);
         }
+    }
+
+    private void resetGame() {
+        for (int y = 0; y < grid.length; y++) {
+            for (int x = 0; x < grid[y].length; x++) {
+                grid[x][y] = 0;
+            }
+        }
+        players.clear();
+        gameState = GameState.LOBBY;
     }
 
     public int[][] getGrid() {
