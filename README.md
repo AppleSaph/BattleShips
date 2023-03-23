@@ -26,6 +26,7 @@ Communication between the client and the server is done using the following prot
 * 'ERROR~message' - where message is the error message
 * 'EXIT' - to exit the game
 * 'TURN~playerNumber' - where playerNumber is the playerNumber of the player who's turn it is
-* 'NEWGAME~playerNumber' - where playerNumber is the playerNumber of the player who's turn it is
+* 'NEWGAME\~x\~y' - where x and y are the width and height of the new game
+* 'POS\~x\~y' - where x and y are the coordinates of a ship part
 * 'PING' - to check if a client is still alive
 * 'PONG' - response to a PING from the client
