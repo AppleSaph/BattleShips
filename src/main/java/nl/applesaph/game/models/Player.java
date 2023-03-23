@@ -38,24 +38,18 @@ public class Player {
         ships.add(ship);
     }
 
-    public boolean hasLost(int[][] grid) {
-        for (int[] row : grid) {
-            for (int loc : row) {
-                if (loc == playerNumber) {
-                    return false;
-                }
+    /**
+     * Checks if the player has lost
+     * @return true if the player has lost, false if not
+     */
+    public boolean hasLost() {
+        for (Ship ship : ships) {
+            if (!ship.hasSunk()) {
+                return false;
             }
         }
 
         return true;
-
-//        for (Ship ship : ships) {
-//            if (!ship.hasSunk()) {
-//                return false;
-//            }
-//        }
-//
-//        return true;
     }
 
 }

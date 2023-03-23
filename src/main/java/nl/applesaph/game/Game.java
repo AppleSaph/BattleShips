@@ -41,7 +41,7 @@ public class Game {
         int amountOfPlayersAlive = 0;
         int winner = -1;
         for (Player player : players.values()) {
-            if (!player.hasLost(grid)) {
+            if (!player.hasLost()) {
                 amountOfPlayersAlive++;
                 winner = player.getPlayerNumber();
             }
@@ -57,13 +57,13 @@ public class Game {
         //if next player is not dead, return next player, wrap around if needed
         if (currentPlayer < lastPlayer) {
             //check if the next player exits
-            if (players.get(currentPlayer + 1) != null && !players.get(currentPlayer + 1).hasLost(grid)) {
+            if (players.get(currentPlayer + 1) != null && !players.get(currentPlayer + 1).hasLost()) {
                 return currentPlayer + 1;
             } else {
                 return changeTurn(currentPlayer + 1);
             }
         } else {
-            if (players.get(firstPlayer) != null && !players.get(firstPlayer).hasLost(grid)) {
+            if (players.get(firstPlayer) != null && !players.get(firstPlayer).hasLost()) {
                 return firstPlayer;
             } else {
                 firstPlayer++;
