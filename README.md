@@ -1,4 +1,5 @@
 # BattleShipsServer
+Go to [BattleShipsClient](https://github.com/gerwintrip/BattleShipsClient) to find the client.
 
 This is a server for the Battleships game.
 
@@ -25,7 +26,7 @@ Communication between the client and the server is done using the following prot
 * 'LOST~playerNumber' - where playerNumber is the playerNumber of the player who lost
 * 'ERROR~message' - where message is the error message
 * 'EXIT' - to exit the game
-* 'TURN~playerNumber' - where playerNumber is the playerNumber of the player who's turn it is
+* 'TURN~playerNumber' - where playerNumber is the playerNumber of the player whose turn it is
 * 'NEWGAME\~x\~y' - where x and y are the width and height of the new game
 * 'POS\~x\~y' - where x and y are the coordinates of a ship part
 * 'PING' - to check if a client is still alive

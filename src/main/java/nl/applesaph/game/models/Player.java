@@ -4,9 +4,9 @@ import java.util.ArrayList;
 
 public class Player {
 
-    private int playerNumber;
-    private String playerName;
-    private ArrayList<Ship> ships = new ArrayList<>();
+    private final int playerNumber;
+    private final String playerName;
+    private final ArrayList<Ship> ships = new ArrayList<>();
 
     public Player(int playerNumber, String playerName) {
         this.playerNumber = playerNumber;

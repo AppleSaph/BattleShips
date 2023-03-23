@@ -21,7 +21,7 @@ public interface ServerInterface {
     int checkUsernameLoggedIn(String username);
 
     List<ClientHandler> getLoggedInClients();
-    
+
     List<ClientHandler> getWaitingClients();
 
     void removeClient(int playerNumber);

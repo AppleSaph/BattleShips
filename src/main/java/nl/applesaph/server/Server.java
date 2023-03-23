@@ -13,12 +13,12 @@ import java.util.List;
 
 public class Server implements ServerInterface, Runnable {
 
-    private int port;
-    private Game game = new Game(this);
+    private final int port;
+    private final Game game = new Game(this);
     private ServerSocket serverSocket;
     private Thread serverThread;
-    private HashMap<Integer, ClientHandler> clientHandlers = new HashMap<>();
-    private HashMap<Integer, String> usernames = new HashMap<>();
+    private final HashMap<Integer, ClientHandler> clientHandlers = new HashMap<>();
+    private final HashMap<Integer, String> usernames = new HashMap<>();
 
     public Server(int port) {
         this.port = port;
@@ -168,10 +168,8 @@ public class Server implements ServerInterface, Runnable {
 
     public void handleCommand(ReceiveCommand command, ClientHandler clientHandler, String line) {
         switch (command) {
-            case EXIT:
-                game.removePlayer(clientHandler.getPlayerNumber());
-                break;
-            case MOVE:
+            case EXIT -> game.removePlayer(clientHandler.getPlayerNumber());
+            case MOVE -> {
                 if (!tryParse(line.split("~")[1]) && !tryParse(line.split("~")[2])) {
                     sendCommand(SendCommand.ERROR, "Invalid move", clientHandler.getPlayerNumber());
                     break;
@@ -185,19 +183,15 @@ public class Server implements ServerInterface, Runnable {
                     break;
                 }
                 handleTurnMessage(clientHandler, Integer.parseInt(line.split("~")[1]), Integer.parseInt(line.split("~")[2]));
-                break;
-            case PING:
-                clientHandler.send("PONG");
-                break;
-            case PONG:
-                clientHandler.setLastPong(System.currentTimeMillis());
-                break;
-            case NEWGAME:
+            }
+            case PING -> clientHandler.send("PONG");
+            case PONG -> clientHandler.setLastPong(System.currentTimeMillis());
+            case NEWGAME -> {
                 clientHandlers.forEach((key, value) -> game.addPlayer(key, new Player(key, getUsername(key))));
                 game.startGame();
-                break;
-            default:
-                break;
+            }
+            default -> {
+            }
         }
     }
 
