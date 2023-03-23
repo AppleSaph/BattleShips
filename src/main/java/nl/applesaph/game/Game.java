@@ -15,7 +15,6 @@ public class Game {
     private final HashMap<Integer, Player> players = new HashMap<>();
     private GameState gameState = GameState.LOBBY;
     private int currentPlayer = 0;
-
     private int firstPlayer = 0;
     private int lastPlayer = 0;
 
@@ -76,6 +75,7 @@ public class Game {
     public void initGrid() {
         Random random = new Random();
         for (Integer integer : players.keySet()) {
+            Ship ship = new Ship();
 
             int x = random.nextInt(grid.length);
             int y = random.nextInt(grid[0].length);
@@ -96,6 +96,9 @@ public class Game {
                 grid[x][y] = integer;
                 grid[x][y + 1] = integer;
                 grid[x][y + 2] = integer;
+                ship.addShipPart(x, y);
+                ship.addShipPart(x, y + 1);
+                ship.addShipPart(x, y + 2);
             } else {
                 //check if the ship is out of bounds, if so, move it back
                 if (x + 2 >= grid.length) {
@@ -107,11 +110,10 @@ public class Game {
                 grid[x][y] = integer;
                 grid[x + 1][y] = integer;
                 grid[x + 2][y] = integer;
+                ship.addShipPart(x, y);
+                ship.addShipPart(x + 1, y);
+                ship.addShipPart(x + 2, y);
             }
-            Ship ship = new Ship();
-            ship.addShipPart(x, y);
-            ship.addShipPart(x, y + 1);
-            ship.addShipPart(x, y + 2);
             players.get(integer).addShip(ship);
         }
     }
