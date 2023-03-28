@@ -141,7 +141,7 @@ public class Game {
     public void startGame() {
         initGrid();
         gameState = GameState.RUNNING;
-        server.sendCommand(SendCommand.NEWGAME, "", 0);
+        server.sendCommand(SendCommand.NEWGAME, grid[0].length + "~" + grid.length , 0);
         currentPlayer = players.keySet().iterator().next();
         firstPlayer = currentPlayer;
         for (Integer integer : players.keySet()) {
