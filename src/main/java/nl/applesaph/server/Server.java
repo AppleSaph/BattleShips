@@ -222,7 +222,7 @@ public class Server implements ServerInterface, Runnable {
             case ERROR -> sendToClient("ERROR~" + message, player);
             case EXIT -> sendToAll("EXIT");
             case TURN -> sendToAll("TURN~" + player);
-            case NEWGAME -> sendToAll("NEWGAME" + message);
+            case NEWGAME -> sendToAll("NEWGAME~" + message);
             case PING -> sendToClient("PING", player);
             case PONG -> sendToClient("PONG", player);
             case HELLO -> sendToClient("HELLO~" + message, player);
