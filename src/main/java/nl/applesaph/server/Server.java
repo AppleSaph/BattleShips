@@ -67,6 +67,10 @@ public class Server implements ServerInterface, Runnable {
         }
     }
 
+    public void skipTurn() {
+        game.skipTurn();
+    }
+
     @Override
     public void handleSetupTurnMessage(ClientHandler client, String message) {
 
@@ -187,6 +191,7 @@ public class Server implements ServerInterface, Runnable {
             case PING -> clientHandler.send("PONG");
             case PONG -> clientHandler.setLastPong(System.currentTimeMillis());
             case NEWGAME -> {
+                game.resetGame();
                 clientHandlers.forEach((key, value) -> game.addPlayer(key, new Player(key, getUsername(key))));
                 game.startGame();
             }

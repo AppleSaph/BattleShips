@@ -201,7 +201,7 @@ public class Game {
         }
     }
 
-    private void resetGame() {
+    public void resetGame() {
         for (int y = 0; y < grid.length; y++) {
             for (int x = 0; x < grid[y].length; x++) {
                 grid[x][y] = 0;
@@ -213,5 +213,10 @@ public class Game {
 
     public int[][] getGrid() {
         return grid;
+    }
+
+    public void skipTurn() {
+        currentPlayer = changeTurn(currentPlayer);
+        gameLoop();
     }
 }

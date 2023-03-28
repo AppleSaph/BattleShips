@@ -50,8 +50,11 @@ public class Main {
         Server server = new Server(port);
         server.start();
         while (!exit) {
-            if (scanner.nextLine().equals("quit")) {
+            String input = scanner.nextLine();
+            if (input.equalsIgnoreCase("quit")) {
                 exit = true;
+            } else if (input.equalsIgnoreCase("skip")) {
+                server.skipTurn();
             }
         }
         server.stop();
