@@ -53,6 +53,8 @@ public class Main {
             String input = scanner.nextLine();
             if (input.equalsIgnoreCase("quit")) {
                 exit = true;
+            } else if (input.equalsIgnoreCase("start")) {
+                server.startGame();
             } else if (input.equalsIgnoreCase("skip")) {
                 server.skipTurn();
             }
