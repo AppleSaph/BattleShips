@@ -10,9 +10,10 @@ public class Main {
 
     public static void main(String[] args) {
         int port = 0;
+        int argsPort = 0;
         if (args.length > 0) {
             try {
-                port = Integer.parseInt(args[0]);
+                argsPort = Integer.parseInt(args[0]);
             } catch (NumberFormatException ignored) {
 
             }
@@ -22,7 +23,8 @@ public class Main {
         boolean valid;
         do {
             try {
-                if (port != 0) {
+                if (argsPort != 0) {
+                    port = argsPort;
                     System.out.println("Using port " + port);
                     break;
                 } else {
@@ -38,17 +40,18 @@ public class Main {
                 }
             } catch (NumberFormatException e) {
                 //if input isn't a number
-                System.out.println("ERROR: Not a valid port");
+                System.err.println("ERROR: Not a valid port");
                 valid = false;
             }
             if (!(0 <= port && port <= 65536)) {
                 //if input is out of range
-                System.out.println("ERROR: Port number is invalid");
+                System.err.println("ERROR: Port number is invalid");
                 valid = false;
             }
         } while (!valid);
         Server server = new Server(port);
         server.start();
+        System.out.println("Type 'start' to start the game, 'skip' to skip a turn and 'quit' to quit the server");
         while (!exit) {
             String input = scanner.nextLine();
             if (input.equalsIgnoreCase("quit")) {
@@ -58,14 +61,14 @@ public class Main {
                     server.startGame();
                     System.out.println("Game started");
                 } catch (IllegalStateException e) {
-                    System.err.println(e.getMessage());
+                    System.err.println("ERROR: " + e.getMessage());
                 }
             } else if (input.equalsIgnoreCase("skip")) {
                 try {
                     server.skipTurn();
                     System.out.println("Turn skipped");
                 } catch (IllegalStateException e) {
-                    System.err.println(e.getMessage());
+                    System.err.println("ERROR: " + e.getMessage());
                 }
             }
         }
