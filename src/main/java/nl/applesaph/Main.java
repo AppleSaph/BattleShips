@@ -51,7 +51,7 @@ public class Main {
         } while (!valid);
         Server server = new Server(port);
         server.start();
-        System.out.println("Type 'start' to start the game, 'skip' to skip a turn and 'quit' to quit the server");
+        System.out.println("Type 'START' to start the game, 'SKIP' to skip a turn and 'QUIT' to quit the server");
         while (!exit) {
             String input = scanner.nextLine();
             if (input.equalsIgnoreCase("quit")) {
