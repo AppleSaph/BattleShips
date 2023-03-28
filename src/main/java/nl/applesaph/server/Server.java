@@ -39,9 +39,7 @@ public class Server implements ServerInterface, Runnable {
         try {
             serverSocket.close();
             serverThread.join();
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
+        } catch (IOException | InterruptedException ignored) {}
     }
 
     @Override
