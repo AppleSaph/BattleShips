@@ -67,7 +67,7 @@ public class Server implements ServerInterface, Runnable {
         }
     }
 
-    public void skipTurn() {
+    public void skipTurn() throws IllegalStateException {
         game.skipTurn();
     }
 
@@ -198,6 +198,7 @@ public class Server implements ServerInterface, Runnable {
         }
     }
     public void startGame() {
+        if (clientHandlers.size() < 2) throw new IllegalStateException("You need at least two connected clients to start a game!");
         game.resetGame();
         clientHandlers.forEach((key, value) -> game.addPlayer(key, new Player(key, getUsername(key))));
         game.startGame();

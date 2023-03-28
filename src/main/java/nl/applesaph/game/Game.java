@@ -216,6 +216,7 @@ public class Game {
     }
 
     public void skipTurn() {
+        if (gameState != GameState.RUNNING) throw new IllegalStateException("There is no game running!");
         currentPlayer = changeTurn(currentPlayer);
         gameLoop();
     }

@@ -54,9 +54,19 @@ public class Main {
             if (input.equalsIgnoreCase("quit")) {
                 exit = true;
             } else if (input.equalsIgnoreCase("start")) {
-                server.startGame();
+                try {
+                    server.startGame();
+                    System.out.println("Game started");
+                } catch (IllegalStateException e) {
+                    System.err.println(e.getMessage());
+                }
             } else if (input.equalsIgnoreCase("skip")) {
-                server.skipTurn();
+                try {
+                    server.skipTurn();
+                    System.out.println("Turn skipped");
+                } catch (IllegalStateException e) {
+                    System.err.println(e.getMessage());
+                }
             }
         }
         server.stop();
