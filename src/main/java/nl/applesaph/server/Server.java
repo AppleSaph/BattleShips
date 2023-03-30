@@ -6,6 +6,7 @@ import nl.applesaph.game.models.Player;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
@@ -145,13 +146,18 @@ public class Server implements ServerInterface, Runnable {
                 Socket socket = serverSocket.accept();
                 //check for the first message, this should be the username
                 BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                PrintWriter out = new PrintWriter(socket.getOutputStream());
                 String username = in.readLine();
                 int playerNumber = checkUsernameLoggedIn(username);
                 if (playerNumber != -1) {
+                    if (!clientHandlers.isEmpty() && !clientHandlers.get(playerNumber).getSocket().isClosed()) {
+                        socket.close();
+                        continue;
+                    }
                     ClientHandler clientHandler = new ClientHandler(socket, this, playerNumber);
                     Thread clientThread = new Thread(clientHandler);
                     clientThread.start();
-                    clientHandlers.replace(playerNumber, clientHandler);
+                    clientHandlers.put(playerNumber, clientHandler);
                     continue;
                 } else {
                     playerNumber = usernames.size() + 1;
