@@ -2,6 +2,7 @@ package nl.applesaph;
 
 import nl.applesaph.server.Server;
 
+import java.io.IOException;
 import java.util.Scanner;
 
 public class Main {
@@ -50,7 +51,12 @@ public class Main {
             }
         } while (!valid);
         Server server = new Server(port);
-        server.start();
+        try {
+            server.start();
+        } catch (IOException e) {
+            System.err.println("ERROR: " + e.getMessage());
+            System.exit(1);
+        }
         System.out.println("Type 'START' to start the game, 'SKIP' to skip a turn and 'QUIT' to quit the server");
         while (!exit) {
             String input = scanner.nextLine();

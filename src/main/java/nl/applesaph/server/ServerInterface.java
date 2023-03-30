@@ -1,10 +1,11 @@
 package nl.applesaph.server;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface ServerInterface {
 
-    void start();
+    void start() throws IOException;
 
     void stop();
 

@@ -25,15 +25,11 @@ public class Server implements ServerInterface, Runnable {
         this.port = port;
     }
 
-    public void start() {
-        try {
-            serverSocket = new ServerSocket(port);
-            serverThread = new Thread(this);
-            serverThread.start();
-            System.out.println("Server started at " + port);
-        } catch (IOException e) {
-            System.out.println("ERROR: Could not start server at port " + port);
-        }
+    public void start() throws IOException {
+        serverSocket = new ServerSocket(port);
+        serverThread = new Thread(this);
+        serverThread.start();
+        System.out.println("Server started at " + port);
     }
 
     public void stop() {
