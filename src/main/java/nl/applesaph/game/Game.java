@@ -203,7 +203,7 @@ public class Game {
 
     public void resetGame() {
         for (int y = 0; y < grid.length; y++) {
-            for (int x = 0; x < grid[y].length; x++) {
+            for (int x = 0; x < grid[x].length; x++) {
                 grid[x][y] = 0;
             }
         }
